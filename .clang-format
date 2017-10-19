@@ -1,0 +1,75 @@
+---
+# How to use:
+#
+# $ clang-format -i [<file> ...]
+# will search for a file named .clang-format (i.e. this file) in the current
+# directory or, recursively, its parent.
+#
+# Or use an editor plugin. e.g. https://github.com/rhysd/vim-clang-format
+#
+# This file has been constructed with the help of https://zed0.co.uk/clang-format-configurator/
+
+BasedOnStyle: LLVM
+
+AlignAfterOpenBracket: AlwaysBreak
+
+# Disallows contracting simple braced statements to a single line
+AllowShortBlocksOnASingleLine: 'false'
+
+# Short case labels wont't be contracted to a single line
+AllowShortCaseLabelsOnASingleLine: 'false'
+
+# Merge all inline functions fitting on a single line
+# Note: functions defined in class scope are inline
+AllowShortFunctionsOnASingleLine: Inline
+
+# "if (a) return;" cannot be put on a single line
+AllowShortIfStatementsOnASingleLine: 'false'
+
+AlwaysBreakBeforeMultilineStrings: 'true'
+
+# Break after the template<...> of a template declaration.
+AlwaysBreakTemplateDeclarations: 'true'
+
+# a function arguments or parameters will either be all on the same line or will have one line each
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+
+# If the constructor initializers don't fit on a line, put each initializer on its own line.
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+
+# Configure each individual brace in BraceWrapping
+BreakBeforeBraces: 'Custom'
+
+# Control of individual brace wrapping cases
+# Rule of thumb: put braces on new lines except for flow-control related braces.
+BraceWrapping: {
+    AfterClass: 'true'
+    AfterControlStatement: 'false'
+    AfterEnum : 'true'
+    AfterFunction : 'true'
+    AfterNamespace : 'true'
+    AfterStruct : 'true'
+    AfterUnion : 'true'
+    BeforeCatch : 'false'
+    BeforeElse : 'false'
+    IndentBraces : 'false'
+}
+# Pointer is aligned to left side
+PointerAlignment: Left
+
+ColumnLimit: '100'
+
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+
+# High penalty to avoid line break just after return type
+PenaltyReturnTypeOnItsOwnLine: '1000'
+
+# Do not automatically sort includes by alphabetical order
+SortIncludes: 'false'
+
+# Treat 'catch' BDD macros and foreach macros as control instructions
+ForEachMacros: [ foreach, Q_FOREACH, BOOST_FOREACH, GIVEN, WHEN, AND_WHEN,
+  THEN, AND_THEN, SECTION ]
+...
