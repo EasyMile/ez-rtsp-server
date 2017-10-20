@@ -1,0 +1,23 @@
+language: c
+
+addons:
+    apt:
+        packages:
+            - realpath
+
+env:
+  global:
+    - docker_args="--volume $(realpath .):/tmp/src --volume $(realpath ..)/ez-rtsp-server-build:/tmp/build"
+    - docker="docker run ${docker_args} buildenv"
+
+services:
+  - docker
+
+before_script:
+  - mkdir ../ez-rtsp-server-build
+  - docker build -t buildenv ci
+
+script:
+  - ${docker} sh -c "cd /tmp/build; cmake /tmp/src"
+  - ${docker} sh -c "make -C /tmp/build"
+  - ${docker} sh -c "make -C /tmp/build test"
