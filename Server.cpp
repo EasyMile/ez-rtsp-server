@@ -25,7 +25,9 @@ RtspServer::RtspServer(const std::string& path, uint16_t port) : m_impl{new CImp
     auto* factory = gst_rtsp_media_factory_new();
     // Publish a dummy video
     gst_rtsp_media_factory_set_launch(
-      factory, "( videotestsrc ! vp8enc ! rtpvp8pay name=pay0 pt=96 )");
+      factory,
+      "( videotestsrc ! vp8enc ! rtpvp8pay name=pay0 pt=96 "
+      "audiotestsrc wave=ticks ! opusenc ! rtpopuspay name=pay1 pt=97 )");
     // Allow multiple clients
     gst_rtsp_media_factory_set_shared(factory, true);
 
