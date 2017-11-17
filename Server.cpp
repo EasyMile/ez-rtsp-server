@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <thread>
+#include <sstream>
 
 struct CImpl
 {
@@ -12,7 +13,9 @@ struct CImpl
   GstRTSPServer* m_server; //< Managed by gst_rtsp_server_new/g_object_unref
 };
 
-RtspServer::RtspServer(const std::string& path, uint16_t port) : m_impl{new CImpl}
+RtspServer::RtspServer(
+  const std::string& path, uint16_t port, const std::string& audio, const std::string& video)
+  : m_impl{new CImpl}
 {
   gst_init(nullptr, nullptr);
   m_impl->m_loop = g_main_loop_new(nullptr, false);
@@ -23,11 +26,17 @@ RtspServer::RtspServer(const std::string& path, uint16_t port) : m_impl{new CImp
   {
     auto* mounts = gst_rtsp_server_get_mount_points(m_impl->m_server);
     auto* factory = gst_rtsp_media_factory_new();
-    // Publish a dummy video
-    gst_rtsp_media_factory_set_launch(
-      factory,
-      "( videotestsrc ! vp8enc ! rtpvp8pay name=pay0 pt=96 "
-      "audiotestsrc wave=ticks ! opusenc ! rtpopuspay name=pay1 pt=97 )");
+
+    std::ostringstream pipeline;
+    pipeline << "( ";
+    pipeline << video;
+    pipeline << " ! vp8enc ! rtpvp8pay name=pay0 pt=96";
+    pipeline << " ";
+    pipeline << audio;
+    pipeline << " ! opusenc ! rtpopuspay name=pay1 pt=97";
+    pipeline << " )";
+    gst_rtsp_media_factory_set_launch(factory, pipeline.str().c_str());
+
     // Allow multiple clients
     gst_rtsp_media_factory_set_shared(factory, true);
 
