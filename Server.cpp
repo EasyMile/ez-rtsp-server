@@ -30,7 +30,8 @@ RtspServer::RtspServer(
     std::ostringstream pipeline;
     pipeline << "( ";
     pipeline << video;
-    pipeline << " ! vp8enc ! rtpvp8pay name=pay0 pt=96";
+    pipeline << " ! videoscale ! video/x-raw,width=640";
+    pipeline << " ! vp8enc deadline=1 ! rtpvp8pay name=pay0 pt=96";
     pipeline << " ";
     pipeline << audio;
     pipeline << " ! opusenc ! rtpopuspay name=pay1 pt=97";
