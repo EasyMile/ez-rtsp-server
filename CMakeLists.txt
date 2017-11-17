@@ -25,7 +25,7 @@ target_link_libraries(_SimpleRtspServer PRIVATE
 # CLI Executable
 
 find_package(Boost REQUIRED COMPONENTS program_options)
-add_executable(SimpleRtspServer main.cpp)
+add_executable(SimpleRtspServer main.cpp sources.cpp)
 target_link_libraries(SimpleRtspServer PRIVATE
   _SimpleRtspServer
   Boost::program_options)
