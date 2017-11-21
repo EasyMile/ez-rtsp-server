@@ -1,17 +1,19 @@
 #pragma once
 
+#include "Options.h"
+
 #include <string>
 #include <memory>
 #include <future>
 
 struct CImpl;
 
+  static const AudioOptions default_audio = { "audiotestsrc wave=ticks", "" };
+  static const VideoOptions default_video = { "videotestsrc", "", 640, 480};
+
 class RtspServer
 {
 public:
-  static constexpr const char* default_audio = "audiotestsrc wave=ticks";
-  static constexpr const char* default_video = "videotestsrc";
-
   /** Prepare a RTSP server
    *
    * The server will publish a stream at rtsp://127.0.0.1:{port}/{path}
@@ -21,14 +23,15 @@ public:
    *
    * @param path The path on which to make a stream available.
    * @param port The port on which the server will listen (dynamically-allocated if 0).
-   * @param audio A gstreamer pipeline string producing raw audio.
-   * @param video A gstreamer pipeline string producing raw video.
+   * @param audio Audio stream options
+   * @param video Video stream options
    */
   explicit RtspServer(
+  /* const std::string& path, uint16_t port, const AudioOptions& audio, const VideoOptions& video) */
     const std::string& path,
     uint16_t port = 0,
-    const std::string& audio = default_audio,
-    const std::string& video = default_video);
+    const AudioOptions& audio = default_audio,
+    const VideoOptions& video = default_video);
   RtspServer(const RtspServer&) = delete;
   RtspServer& operator=(const RtspServer&) = delete;
   RtspServer(RtspServer&&) = default;

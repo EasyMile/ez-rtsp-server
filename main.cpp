@@ -45,11 +45,11 @@ po::variables_map parseArgs(int argc, char** argv)
     "Port to listen to. If 0, the port will be allocated dynamically.");
   desc.add_options()(
     "audio",
-    po::value<AudioSource>()->default_value({AudioSource::presets.at("dummy")}, "dummy"),
+    po::value<AudioSource>()->default_value(AudioSource::presets.at("dummy"), "dummy"),
     "Audio source preset.");
   desc.add_options()(
     "video",
-    po::value<VideoSource>()->default_value({VideoSource::presets.at("dummy")}, "dummy"),
+    po::value<VideoSource>()->default_value(VideoSource::presets.at("dummy"), "dummy"),
     "Video source preset.");
 
   po::variables_map vm;

@@ -14,7 +14,7 @@ struct CImpl
 };
 
 RtspServer::RtspServer(
-  const std::string& path, uint16_t port, const std::string& audio, const std::string& video)
+  const std::string& path, uint16_t port, const AudioOptions& audio, const VideoOptions& video)
   : m_impl{new CImpl}
 {
   gst_init(nullptr, nullptr);
@@ -29,11 +29,17 @@ RtspServer::RtspServer(
 
     std::ostringstream pipeline;
     pipeline << "( ";
-    pipeline << video;
-    pipeline << " ! videoscale ! video/x-raw,width=640";
+    pipeline << video.video;
+    pipeline << " ! videoscale ! video/x-raw,width=" << video.width << ",height=" << video.height;
+    if (not video.post_video.empty()) {
+      pipeline << " ! videoconvert ! " << video.post_video << " ! videoconvert";
+    }
     pipeline << " ! vp8enc deadline=1 ! rtpvp8pay name=pay0 pt=96";
     pipeline << " ";
-    pipeline << audio;
+    pipeline << audio.audio;
+    if (not audio.post_audio.empty()) {
+      pipeline << " ! audioconvert ! " << audio.post_audio << " ! audioconvert";
+    }
     pipeline << " ! opusenc ! rtpopuspay name=pay1 pt=97";
     pipeline << " )";
     gst_rtsp_media_factory_set_launch(factory, pipeline.str().c_str());

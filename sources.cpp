@@ -3,9 +3,12 @@
 #include <vector>
 #include <boost/algorithm/string/join.hpp>
 
-Source::Presets AudioSource::presets = {{"dummy", "audiotestsrc wave=ticks"},
-                                        {"pulse", "pulsesrc"}};
-Source::Presets VideoSource::presets = {{"dummy", "videotestsrc"}, {"v4l", "v4l2src"}};
+template <>
+AudioSource::Presets AudioSource::presets = {{"dummy", {"audiotestsrc wave=ticks", ""}},
+                                             {"pulse", {"pulsesrc", ""}}};
+template <>
+VideoSource::Presets VideoSource::presets = {{"dummy", {"videotestsrc", "", 640, 480}},
+                                             {"v4l", {"v4l2src", "", 640, 480}}};
 
 template <class T>
 void printPresets(std::ostream& out, const std::string& name)
