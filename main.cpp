@@ -51,6 +51,14 @@ po::variables_map parseArgs(int argc, char** argv)
     "video",
     po::value<VideoSource>()->default_value(VideoSource::presets.at("dummy"), "dummy"),
     "Video source preset.");
+  desc.add_options()(
+    "post-audio",
+    po::value<std::string>()->default_value(""),
+    "GStreamer pipeline fragment for audio post-processing.");
+  desc.add_options()(
+    "post-video",
+    po::value<std::string>()->default_value(""),
+    "GStreamer pipeline fragment for video post-processing.");
 
   po::variables_map vm;
   try {
@@ -78,12 +86,16 @@ po::variables_map parseArgs(int argc, char** argv)
 int main(int argc, char** argv)
 {
   auto vm = parseArgs(argc, argv);
-  auto path = vm["path"].as<std::string>();
 
-  auto server = RtspServer{path,
-                           vm["port"].as<uint16_t>(),
-                           vm["audio"].as<AudioSource>().value,
-                           vm["video"].as<VideoSource>().value};
+  auto path = vm["path"].as<std::string>();
+  auto port = vm["port"].as<uint16_t>();
+
+  auto audio = vm["audio"].as<AudioSource>().value;
+  auto video = vm["video"].as<VideoSource>().value;
+  audio.post_audio = vm["post-audio"].as<std::string>();
+  video.post_video = vm["post-video"].as<std::string>();
+
+  auto server = RtspServer{path, port, audio, video};
   std::cout << "rtsp://127.0.0.1:" << server.port() << path << std::endl;
 
   while (true) {
