@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
 
-#include "Server.h"
+#include <Server.h>
 
 TEST_CASE("test harness")
 {
