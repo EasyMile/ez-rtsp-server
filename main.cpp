@@ -59,6 +59,8 @@ po::variables_map parseArgs(int argc, char** argv)
     "post-video",
     po::value<std::string>()->default_value(""),
     "GStreamer pipeline fragment for video post-processing.");
+  desc.add_options()("width", po::value<int>()->default_value(640), "Video width.");
+  desc.add_options()("height", po::value<int>()->default_value(480), "Video height.");
 
   po::variables_map vm;
   try {
@@ -94,6 +96,8 @@ int main(int argc, char** argv)
   auto video = vm["video"].as<VideoSource>().value;
   audio.post_audio = vm["post-audio"].as<std::string>();
   video.post_video = vm["post-video"].as<std::string>();
+  video.width = vm["width"].as<int>();
+  video.height = vm["height"].as<int>();
 
   auto server = RtspServer{path, port, audio, video};
   std::cout << "rtsp://127.0.0.1:" << server.port() << path << std::endl;
