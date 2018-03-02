@@ -4,14 +4,14 @@
 
 struct AudioOptions
 {
-  std::string audio;
-  std::string post_audio;
+  std::string pipe;
+  std::string post;
 };
 
 struct VideoOptions
 {
-  std::string video;
-  std::string post_video;
-  int width;
-  int height;
+  std::string pipe;
+  std::string post;
+  int width{640};
+  int height{480};
 };

@@ -14,9 +14,25 @@ namespace po = boost::program_options;
 template <class T>
 void validate(boost::any& v, const std::vector<std::string>& values, T*, int)
 {
+  static_assert(
+    std::is_same<T, AudioSource>::value or std::is_same<T, VideoSource>::value, "Unsupported type");
+
   po::validators::check_first_occurrence(v);
   const std::string& s = po::validators::get_single_string(values);
 
+  // custom, arbitrary pipeline
+  if (s.find("launch:") == 0) {
+    try {
+      auto source = T{{}};
+      source.value.pipe = s.substr(strlen("launch:"));
+      v = boost::any(std::move(source));
+    } catch (std::out_of_range&) {
+      throw po::validation_error(po::validation_error::invalid_option_value);
+    }
+    return;
+  }
+
+  // preset
   try {
     v = boost::any(T{T::presets.at(s)});
   } catch (std::out_of_range&) {
@@ -46,11 +62,11 @@ po::variables_map parseArgs(int argc, char** argv)
   desc.add_options()(
     "audio",
     po::value<AudioSource>()->default_value(AudioSource::presets.at("dummy"), "dummy"),
-    "Audio source preset.");
+    "Audio source preset or pipeline prefixed with 'launch:'.");
   desc.add_options()(
     "video",
     po::value<VideoSource>()->default_value(VideoSource::presets.at("dummy"), "dummy"),
-    "Video source preset.");
+    "Video source preset or pipeline prefixed with 'launch:'.");
   desc.add_options()(
     "post-audio",
     po::value<std::string>()->default_value(""),
@@ -94,8 +110,8 @@ int main(int argc, char** argv)
 
   auto audio = vm["audio"].as<AudioSource>().value;
   auto video = vm["video"].as<VideoSource>().value;
-  audio.post_audio = vm["post-audio"].as<std::string>();
-  video.post_video = vm["post-video"].as<std::string>();
+  audio.post = vm["post-audio"].as<std::string>();
+  video.post = vm["post-video"].as<std::string>();
   video.width = vm["width"].as<int>();
   video.height = vm["height"].as<int>();
 

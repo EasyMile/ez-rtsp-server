@@ -29,16 +29,16 @@ RtspServer::RtspServer(
 
     std::ostringstream pipeline;
     pipeline << "( ";
-    pipeline << video.video;
+    pipeline << video.pipe;
     pipeline << " ! videoscale ! video/x-raw,width=" << video.width << ",height=" << video.height;
-    if (not video.post_video.empty()) {
-      pipeline << " ! videoconvert ! " << video.post_video << " ! videoconvert";
+    if (not video.post.empty()) {
+      pipeline << " ! videoconvert ! " << video.post << " ! videoconvert";
     }
     pipeline << " ! vp8enc deadline=1 ! rtpvp8pay name=pay0 pt=96";
     pipeline << " ";
-    pipeline << audio.audio;
-    if (not audio.post_audio.empty()) {
-      pipeline << " ! audioconvert ! " << audio.post_audio << " ! audioconvert";
+    pipeline << audio.pipe;
+    if (not audio.post.empty()) {
+      pipeline << " ! audioconvert ! " << audio.post << " ! audioconvert";
     }
     pipeline << " ! opusenc ! rtpopuspay name=pay1 pt=97";
     pipeline << " )";
